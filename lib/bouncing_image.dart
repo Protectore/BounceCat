@@ -26,15 +26,6 @@ class _BouncingImageState extends State<BouncingImage> {
 
   Offset? _velocity;
 
-  @override
-  void initState() {
-    _timer = Timer.periodic(
-      _timerInterval,
-      (timer) => update(),
-    );
-
-    super.initState();
-  }
 
   void update() {
     setState(
@@ -63,6 +54,16 @@ class _BouncingImageState extends State<BouncingImage> {
   void updateVelocity() {
     _velocity = _velocity!
         .translate(_friction * _velocity!.dx / _velocity!.dx.abs(), _gravity);
+  }
+
+  @override
+  void initState() {
+    _timer = Timer.periodic(
+      _timerInterval,
+      (timer) => update(),
+    );
+
+    super.initState();
   }
 
   @override
