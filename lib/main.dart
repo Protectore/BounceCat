@@ -1,4 +1,4 @@
-import 'package:bounce_cat/flying_cat.dart';
+import 'package:bounce_cat/bouncing_image.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,8 +12,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(canvasColor: Colors.deepPurple),
-      home: const Scaffold(
-        body: FlyingCat(),
+      home: Scaffold(
+        body: BouncingImage(image: Image.asset('assets/images/test.png')),
       ),
     );
   }
