@@ -51,9 +51,13 @@ class _BouncingImageState extends State<BouncingImage> {
 
   void moveImage() {
     _bottom = clampDouble(
-        _bottom - _velocity!.dy / 1000, 0, MediaQuery.of(context).size.height);
+        _bottom - (!_velocity!.dy.isNaN ? _velocity!.dy / 1000 : 0),
+        0,
+        MediaQuery.of(context).size.height);
     _left = clampDouble(
-        _left + _velocity!.dx / 1000, 0, MediaQuery.of(context).size.width);
+        _left + (!_velocity!.dx.isNaN ? _velocity!.dx / 1000 : 0),
+        0,
+        MediaQuery.of(context).size.width);
   }
 
   void updateVelocity() {
