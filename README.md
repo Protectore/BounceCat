@@ -1,16 +1,5 @@
-# bounce_cat
+# Bounce Cat
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+It's my First Flutter/Dart project. It's purpose is to learn basics of Dart and Flutter. 
+Application must be an image of cat that user can throw with gesture. On collision with screen border
+the cat will meow and bounce.
