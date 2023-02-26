@@ -1,19 +1,19 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class BouncingImage extends StatefulWidget {
-  late final Image _image;
+  final Image image;
+  final AudioPlayer? bounceSound;
 
   final double gravity = 98;
   final double friction = 2;
-
   final double elasticity = 0.7;
+  final double movementThreshold = 0.005;
 
-  BouncingImage({super.key, required Image image}) {
-    _image = image;
-  }
+  const BouncingImage({super.key, required this.image, this.bounceSound});
 
   @override
   State<BouncingImage> createState() => _BouncingImageState();
@@ -39,8 +39,16 @@ class _BouncingImageState extends State<BouncingImage> {
         }
 
         _size = key.currentContext!.size!;
+
+        var bottom = _bottom;
+        var left = _left;
         moveImage();
+        var offset = Offset(_left - left, _bottom - bottom);
         updateVelocity();
+
+        if (offset.distance <= widget.movementThreshold){
+          _velocity = null;
+        }
       },
     );
   }
@@ -57,17 +65,29 @@ class _BouncingImageState extends State<BouncingImage> {
   }
 
   void updateVelocity() {
-    if (_bottom <= 0 || _bottom >= MediaQuery.of(context).size.height - _size!.height){
-      _velocity = _velocity!.scale(1, -widget.elasticity);
-    }
-
-    if (_left <= 0 || _left >= MediaQuery.of(context).size.width - _size!.width){
-      _velocity = _velocity!.scale(-widget.elasticity, 1);
+    if (bounce()){
+      debugPrint("bounce");
+      widget.bounceSound?.resume();
     }
 
     _velocity = _velocity!.translate(
         -widget.friction * _velocity!.dx.sign,
         widget.gravity);
+  }
+
+  bool bounce(){
+    bool isBounced = false;
+    if (_bottom <= 0 || _bottom >= MediaQuery.of(context).size.height - _size!.height){
+      _velocity = _velocity!.scale(1, -widget.elasticity);
+      isBounced = true;
+    }
+
+    if (_left <= 0 || _left >= MediaQuery.of(context).size.width - _size!.width){
+      _velocity = _velocity!.scale(-widget.elasticity, 1);
+      isBounced = true;
+    }
+
+    return isBounced;
   }
 
   void onPanStart(DragStartDetails details) {
@@ -109,7 +129,7 @@ class _BouncingImageState extends State<BouncingImage> {
             key: key,
             bottom: _bottom,
             left: _left,
-            child: widget._image,
+            child: widget.image,
           ),
         ],
       ),
