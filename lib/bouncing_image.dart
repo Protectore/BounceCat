@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 class BouncingImage extends StatefulWidget {
   late final Image _image;
 
-  final double _gravity = 98;
-  final double _friction = -5;
+  final double gravity = 98;
+  final double friction = 2;
+
+  final double elasticity = 0.7;
 
   BouncingImage({super.key, required Image image}) {
     _image = image;
@@ -36,6 +38,7 @@ class _BouncingImageState extends State<BouncingImage> {
           return;
         }
 
+        _size = key.currentContext!.size!;
         moveImage();
         updateVelocity();
       },
@@ -43,7 +46,6 @@ class _BouncingImageState extends State<BouncingImage> {
   }
 
   void moveImage() {
-    _size = key.currentContext!.size!;
 
     _bottom = clampDouble(
         _bottom - (!_velocity!.dy.isNaN ? _velocity!.dy / 1000 : 0),
@@ -56,9 +58,17 @@ class _BouncingImageState extends State<BouncingImage> {
   }
 
   void updateVelocity() {
+    if (_bottom <= 0 || _bottom >= MediaQuery.of(context).size.height - _size!.height){
+      _velocity = _velocity!.scale(1, -widget.elasticity);
+    }
+
+    if (_left <= 0 || _left >= MediaQuery.of(context).size.width - _size!.width){
+      _velocity = _velocity!.scale(-widget.elasticity, 1);
+    }
+
     _velocity = _velocity!.translate(
-        widget._friction * _velocity!.dx / _velocity!.dx.abs(),
-        widget._gravity);
+        -widget.friction * _velocity!.dx.sign,
+        widget.gravity);
   }
 
   void onPanStart(DragStartDetails details) {
