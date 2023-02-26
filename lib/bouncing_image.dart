@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 class BouncingImage extends StatefulWidget {
   late final Image _image;
 
+  final double _gravity = 98;
+  final double _friction = -5;
+
   BouncingImage({super.key, required Image image}) {
     _image = image;
   }
@@ -17,9 +20,6 @@ class BouncingImage extends StatefulWidget {
 class _BouncingImageState extends State<BouncingImage> {
   Timer? _timer;
   final _timerInterval = const Duration(milliseconds: 10);
-
-  final double _gravity = 98;
-  final double _friction = -5;
 
   double _bottom = 0;
   double _left = 0;
@@ -53,7 +53,7 @@ class _BouncingImageState extends State<BouncingImage> {
 
   void updateVelocity() {
     _velocity = _velocity!
-        .translate(_friction * _velocity!.dx / _velocity!.dx.abs(), _gravity);
+        .translate(widget._friction * _velocity!.dx / _velocity!.dx.abs(), widget._gravity);
   }
 
   @override
