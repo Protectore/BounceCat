@@ -26,7 +26,6 @@ class _BouncingImageState extends State<BouncingImage> {
 
   Offset? _velocity;
 
-
   void update() {
     setState(
       () {
@@ -52,8 +51,26 @@ class _BouncingImageState extends State<BouncingImage> {
   }
 
   void updateVelocity() {
-    _velocity = _velocity!
-        .translate(widget._friction * _velocity!.dx / _velocity!.dx.abs(), widget._gravity);
+    _velocity = _velocity!.translate(
+        widget._friction * _velocity!.dx / _velocity!.dx.abs(),
+        widget._gravity);
+  }
+
+  void onPanStart(DragStartDetails details) {
+    _velocity = null;
+  }
+
+  void onPanUpdate(DragUpdateDetails details) {
+    setState(
+      () {
+        _bottom -= details.delta.dy;
+        _left += details.delta.dx;
+      },
+    );
+  }
+
+  void onPanEnd(DragEndDetails details) {
+    _velocity = details.velocity.pixelsPerSecond;
   }
 
   @override
@@ -69,20 +86,9 @@ class _BouncingImageState extends State<BouncingImage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onPanStart: (details) {
-        _velocity = null;
-      },
-      onPanUpdate: (details) {
-        setState(
-          () {
-            _bottom -= details.delta.dy;
-            _left += details.delta.dx;
-          },
-        );
-      },
-      onPanEnd: (details) {
-        _velocity = details.velocity.pixelsPerSecond;
-      },
+      onPanStart: onPanStart,
+      onPanUpdate: onPanUpdate,
+      onPanEnd: onPanEnd,
       child: Stack(
         children: [
           Positioned(
