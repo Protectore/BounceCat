@@ -13,7 +13,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(canvasColor: Colors.deepPurple),
       home: Scaffold(
-        body: BouncingImage(image: Image.asset('assets/images/test.png')),
+        body: BouncingImage(
+            image: Image.asset(
+          'assets/images/cat.png',
+          width: 200,
+          height: 200,
+        )),
       ),
     );
   }

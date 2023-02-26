@@ -46,7 +46,6 @@ class _BouncingImageState extends State<BouncingImage> {
   }
 
   void moveImage() {
-
     _bottom = clampDouble(
         _bottom - (!_velocity!.dy.isNaN ? _velocity!.dy / 1000 : 0),
         0,
