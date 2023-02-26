@@ -18,9 +18,12 @@ class BouncingImage extends StatefulWidget {
 }
 
 class _BouncingImageState extends State<BouncingImage> {
+  GlobalKey key = GlobalKey();
+  
   Timer? _timer;
   final _timerInterval = const Duration(milliseconds: 10);
 
+  Size? _size;
   double _bottom = 0;
   double _left = 0;
 
@@ -40,14 +43,16 @@ class _BouncingImageState extends State<BouncingImage> {
   }
 
   void moveImage() {
+    _size = key.currentContext!.size!;
+
     _bottom = clampDouble(
         _bottom - (!_velocity!.dy.isNaN ? _velocity!.dy / 1000 : 0),
         0,
-        MediaQuery.of(context).size.height);
+        MediaQuery.of(context).size.height - _size!.height);
     _left = clampDouble(
         _left + (!_velocity!.dx.isNaN ? _velocity!.dx / 1000 : 0),
         0,
-        MediaQuery.of(context).size.width);
+        MediaQuery.of(context).size.width - _size!.width);
   }
 
   void updateVelocity() {
@@ -92,6 +97,7 @@ class _BouncingImageState extends State<BouncingImage> {
       child: Stack(
         children: [
           Positioned(
+            key: key,
             bottom: _bottom,
             left: _left,
             child: widget._image,
