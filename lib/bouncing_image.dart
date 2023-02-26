@@ -7,13 +7,16 @@ import 'package:flutter/material.dart';
 class BouncingImage extends StatefulWidget {
   final Image image;
   final AudioPlayer? bounceSound;
+  final AudioPlayer swipeReleaseSound = AudioPlayer()
+    ..setSourceAsset("sounds/swoosh.mp3")
+    ..setReleaseMode(ReleaseMode.stop);
 
   final double gravity = 98;
   final double friction = 2;
   final double elasticity = 0.7;
   final double movementThreshold = 0.005;
 
-  const BouncingImage({super.key, required this.image, this.bounceSound});
+  BouncingImage({super.key, required this.image, this.bounceSound});
 
   @override
   State<BouncingImage> createState() => _BouncingImageState();
@@ -21,7 +24,7 @@ class BouncingImage extends StatefulWidget {
 
 class _BouncingImageState extends State<BouncingImage> {
   GlobalKey key = GlobalKey();
-  
+
   Timer? _timer;
   final _timerInterval = const Duration(milliseconds: 10);
 
@@ -46,7 +49,7 @@ class _BouncingImageState extends State<BouncingImage> {
         var offset = Offset(_left - left, _bottom - bottom);
         updateVelocity();
 
-        if (offset.distance <= widget.movementThreshold){
+        if (offset.distance <= widget.movementThreshold) {
           _velocity = null;
         }
       },
@@ -65,24 +68,25 @@ class _BouncingImageState extends State<BouncingImage> {
   }
 
   void updateVelocity() {
-    if (bounce()){
+    if (bounce()) {
       debugPrint("bounce");
       widget.bounceSound?.resume();
     }
 
-    _velocity = _velocity!.translate(
-        -widget.friction * _velocity!.dx.sign,
-        widget.gravity);
+    _velocity = _velocity!
+        .translate(-widget.friction * _velocity!.dx.sign, widget.gravity);
   }
 
-  bool bounce(){
+  bool bounce() {
     bool isBounced = false;
-    if (_bottom <= 0 || _bottom >= MediaQuery.of(context).size.height - _size!.height){
+    if (_bottom <= 0 ||
+        _bottom >= MediaQuery.of(context).size.height - _size!.height) {
       _velocity = _velocity!.scale(1, -widget.elasticity);
       isBounced = true;
     }
 
-    if (_left <= 0 || _left >= MediaQuery.of(context).size.width - _size!.width){
+    if (_left <= 0 ||
+        _left >= MediaQuery.of(context).size.width - _size!.width) {
       _velocity = _velocity!.scale(-widget.elasticity, 1);
       isBounced = true;
     }
@@ -105,6 +109,7 @@ class _BouncingImageState extends State<BouncingImage> {
 
   void onPanEnd(DragEndDetails details) {
     _velocity = details.velocity.pixelsPerSecond;
+    widget.swipeReleaseSound.resume();
   }
 
   @override
